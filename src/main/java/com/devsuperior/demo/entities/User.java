@@ -1,15 +1,22 @@
 package com.devsuperior.demo.entities;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "tb_user")
-public class User {
+public class User implements UserDetails {
+    // Declara a classe 'User' como uma classe pública.
+    // O 'implements UserDetails' indica que esta classe está fornecendo
+    // uma implementação para a interface 'UserDetails' do Spring Security.
+    // Isso significa que a classe 'User' será usada para representar
+    // os detalhes de um usuário autenticado no sistema,
+    // fornecendo informações como nome de usuário, senha, autoridades,
+    // e status da conta (habilitada, não expirada, etc.).
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,8 +67,52 @@ public class User {
         this.email = email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Retorna a coleção de autoridades (papéis/perfis) concedidas ao usuário.
+        // No Spring Security, isso é usado para verificar as permissões do usuário.
+        return roles;
+    }
+
     public String getPassword() {
+        // Retorna a senha usada para autenticar o usuário.
+        // O Spring Security usa isso para comparar com a senha fornecida durante o login.
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        // Retorna o nome de usuário usado para autenticar o usuário.
+        // Neste caso, o email está sendo usado como nome de usuário.
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        // Indica se a conta do usuário expirou.
+        // 'true' significa que a conta é válida e não expirou.
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        // Indica se o usuário está bloqueado ou desbloqueado.
+        // 'true' significa que o usuário não está bloqueado e pode ser autenticado.
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        // Indica se as credenciais (senha) do usuário expiraram.
+        // 'true' significa que as credenciais são válidas e não expiraram.
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        // Indica se o usuário está habilitado ou desabilitado.
+        // 'true' significa que o usuário está habilitado e pode ser autenticado.
+        return true;
     }
 
     public void setPassword(String password) {

@@ -1,11 +1,14 @@
 package com.devsuperior.demo.entities;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Objects;
-@Entity
-@Table(name = "tb_role")
-public class Role {
+@Entity // Indica que esta classe é uma entidade JPA, mapeando-a para uma tabela no banco de dados.
+@Table(name = "tb_role") // Especifica o nome da tabela no banco de dados para esta entidade como "tb_role".
+public class Role implements GrantedAuthority { // Declara a classe 'Role' como uma entidade e indica que ela implementa a interface 'GrantedAuthority'.
+    // 'GrantedAuthority' é uma interface do Spring Security que representa uma permissão ou papel concedido a um principal (usuário).
+    // Isso significa que objetos 'Role' podem ser usados para definir as autorizações de um usuário.
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +31,11 @@ public class Role {
         this.id = id;
     }
 
+    @Override // Indica que este método está sobrescrevendo um método da interface 'GrantedAuthority'.
     public String getAuthority() {
+        // Retorna a string que representa a autoridade (papel/perfil) concedida.
+        // No Spring Security, este método é usado para obter o nome do papel
+        // (por exemplo, "ROLE_ADMIN", "ROLE_OPERATOR") associado a esta instância de Role.
         return authority;
     }
 
